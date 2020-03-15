@@ -18,7 +18,9 @@ public class Address {
     public int getHouse(){
         return house;
     }
-
+    public int getApartment(){
+        return apartment;
+    }
     @Override
     public String toString(){
         return "street: " + street + "; "+

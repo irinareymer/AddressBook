@@ -1,74 +1,147 @@
 package addressBook;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookTest {
 
     Address address1 = new Address("Right", 12, 3);
     Address address2 = new Address("Left", 13, 3);
+    Address incorrectAddress = new Address("Mid",-12,0);
 
     @Test
-    void setBook() {
+    void addPersonAndAddress() {
         Book actual = new Book();
-        actual.setBook("Ann",address1);
-        actual.setBook("Dan",address2);
-        assertEquals("name: Ann; street: Right; house: 12; apartment: 3\n" +
-                "name: Dan; street: Left; house: 13; apartment: 3\n", actual.toString());
+        actual.addPersonAndAddress("Ann",address1);
+        actual.addPersonAndAddress("Dan",address2);
+        Book expected = new Book();
+        expected.getBook().put("Ann", address1);
+        expected.getBook().put("Dan", address2);
+        assertEquals(expected, actual);
+        System.out.print(actual.toString() + System.lineSeparator());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.addPersonAndAddress("Ann",address2));
+        System.out.print(actual.toString() + System.lineSeparator());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.addPersonAndAddress("Vic", incorrectAddress));
+        System.out.print(actual.toString() + System.lineSeparator());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.addPersonAndAddress("", address1));
+        System.out.print(actual.toString() + System.lineSeparator());
     }
 
     @Test
     void removePerson() {
         Book actual = new Book();
-        actual.setBook("Ann",address1);
-        actual.setBook("Dan",address2);
-        actual.removePerson("");
-        assertEquals("name: Ann; street: Right; house: 12; apartment: 3\n" +
-                "name: Dan; street: Left; house: 13; apartment: 3\n", actual.toString());
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.removePerson("Dan"));
 
+        actual.addPersonAndAddress("Ann",address1);
+        actual.addPersonAndAddress("Dan",address2);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.removePerson(""));
+        System.out.print(actual.toString() + System.lineSeparator());
+
+        Book expected = new Book();
+        expected.getBook().put("Ann", address1);
         actual.removePerson("Dan");
-        assertEquals("name: Ann; street: Right; house: 12; apartment: 3\n", actual.toString());
+        assertEquals(expected, actual);
+        System.out.print(actual.toString() + System.lineSeparator());
     }
 
     @Test
     void changeAddress() {
         Book actual = new Book();
-        actual.setBook("Ann",address1);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.changeAddress("Dan",address1));
+
+        actual.addPersonAndAddress("Ann",address1);
         actual.changeAddress("Ann", address1);
-        assertEquals("name: Ann; street: Right; house: 12; apartment: 3\n", actual.toString());
+        Book expected = new Book();
+        expected.getBook().put("Ann", address1);
+        assertEquals(expected,actual);
+        System.out.print(actual.toString() + System.lineSeparator());
 
         actual.changeAddress("Ann", address2);
-        assertEquals("name: Ann; street: Left; house: 13; apartment: 3\n", actual.toString());
+        expected.getBook().replace("Ann",address1,address2);
+        assertEquals(expected,actual);
+        System.out.print(actual.toString() + System.lineSeparator());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.changeAddress("Ann", incorrectAddress));
+        System.out.print(actual.toString() + System.lineSeparator());
     }
 
     @Test
     void getAddressByName() {
         Book actual = new Book();
-        actual.setBook("Ann",address1);
-        assertEquals("street: Right; house: 12; apartment: 3", actual.getAddressByName("Ann").toString());
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.getAddressByName("Dan"));
+
+        Book expected = new Book();
+        actual.addPersonAndAddress("Ann",address1);
+        expected.getBook().put("Ann",address1);
+        assertEquals(expected.getBook().get("Ann"),actual.getAddressByName("Ann"));
+        System.out.print(actual.getAddressByName("Ann").toString() + System.lineSeparator());
     }
 
     @Test
     void findByStreet() {
         Book actual = new Book();
-        actual.setBook("Ann",address1);
-        actual.setBook("Dan",address2);
-        assertEquals("[Ann]",actual.findByStreet("Right").toString());
+        List<String> actualList;
+        actual.addPersonAndAddress("Ann",address1);
+        actual.addPersonAndAddress("Dan",address2);
 
-        actual.changeAddress("Dan", address1);
-        assertEquals("[Ann, Dan]",actual.findByStreet("Right").toString());
+        actualList = actual.findByStreet("Right");
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add("Ann");
+        assertEquals(expectedList, actualList);
+        System.out.print(actualList + System.lineSeparator());
+        expectedList.clear();
 
+        actual.changeAddress("Dan",address1);
+        actualList = actual.findByStreet("Right");
+        expectedList.add("Ann");
+        expectedList.add("Dan");
+        assertEquals(expectedList,actualList);
+        System.out.print(actualList + System.lineSeparator());
+        expectedList.clear();
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.findByStreet(""));
     }
 
     @Test
     void findByHouse() {
         Book actual = new Book();
-        actual.setBook("Ann",address1);
-        actual.setBook("Dan",address2);
-        assertEquals("[Ann]",actual.findByHouse(12).toString());
+        List<String> actualList;
+        actual.addPersonAndAddress("Ann",address1);
+        actual.addPersonAndAddress("Dan",address1);
 
-        actual.changeAddress("Dan", address1);
-        assertEquals("[Ann, Dan]",actual.findByHouse(12).toString());
+        actualList = actual.findByHouse("Right",12);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add("Ann");
+        expectedList.add("Dan");
+        assertEquals(expectedList,actualList);
+        System.out.print(actualList + System.lineSeparator());
+        expectedList.clear();
 
+        actual.changeAddress("Dan", address2);
+        actualList = actual.findByHouse("Right",12);
+        expectedList.add("Ann");
+        assertEquals(expectedList,actualList);
+        System.out.print(actualList + System.lineSeparator());
+        expectedList.clear();
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                actual.findByHouse("Mid", -12));
     }
 }
