@@ -58,6 +58,7 @@ public class Book {
     @Override
     public String toString(){
         StringBuilder res = new StringBuilder();
+
         for (Map.Entry<String, Address> k: book.entrySet()){
             res.append("name: ").append(k.getKey()).append("; ").append(k.getValue()).append(System.lineSeparator());
         }
