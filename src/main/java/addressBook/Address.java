@@ -8,6 +8,8 @@ public class Address {
     private int apartment;
 
     public Address(String street, int house, int apartment) {
+        if (street.equals("") || house <= 0 || apartment <= 0)
+            throw new IllegalArgumentException("incorrect address");
         this.street = street;
         this.house = house;
         this.apartment = apartment;

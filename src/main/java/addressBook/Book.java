@@ -10,8 +10,6 @@ public class Book {
             throw new IllegalArgumentException("incorrect name");
         if (book.containsKey(name))
             throw new IllegalArgumentException("This person is already in book. You may changeAddress for this person.");
-        if (address.getStreet().equals("") || address.getHouse() <= 0 || address.getApartment() <= 0)
-            throw new IllegalArgumentException("incorrect address");
         book.put(name, address);
     }
 
@@ -24,8 +22,6 @@ public class Book {
     public void changeAddress(String name, Address newAddress){
         if (!book.containsKey(name))
             throw new IllegalArgumentException("Can`t find person in book. You may addPersonAndAddress.");
-        if (newAddress.getStreet().equals("") || newAddress.getHouse() <= 0 || newAddress.getApartment() <= 0)
-            throw new IllegalArgumentException("incorrect address");
         book.replace(name, newAddress);
     }
 
@@ -75,8 +71,8 @@ public class Book {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         Book other = (Book) obj;
         for(Map.Entry<String, Address> k: book.entrySet())
-            if (other.getBook().getOrDefault(k.getKey(), k.getValue()) == k.getValue()) return true;
-        return false;
+            if (other.getBook().getOrDefault(k.getKey(), k.getValue()) != k.getValue()) return false;
+        return true;
     }
 
     @Override
