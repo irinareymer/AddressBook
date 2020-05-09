@@ -12,7 +12,6 @@ class BookTest {
 
     Address address1 = new Address("Right", 12, 3);
     Address address2 = new Address("Left", 13, 3);
-    Address incorrectAddress = new Address("Mid",-12,0);
 
     @Test
     void addPersonAndAddress() {
@@ -30,7 +29,7 @@ class BookTest {
         System.out.print(actual.toString() + System.lineSeparator());
 
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-                actual.addPersonAndAddress("Vic", incorrectAddress));
+                actual.addPersonAndAddress("Vic", new Address("Mid",-12,0)));
         System.out.print(actual.toString() + System.lineSeparator());
 
         Assertions.assertThrows(IllegalArgumentException.class, () ->
@@ -76,7 +75,7 @@ class BookTest {
         System.out.print(actual.toString() + System.lineSeparator());
 
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-                actual.changeAddress("Ann", incorrectAddress));
+                actual.changeAddress("Ann", new Address("Mid",-12,0)));
         System.out.print(actual.toString() + System.lineSeparator());
     }
 
